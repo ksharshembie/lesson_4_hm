@@ -7,9 +7,9 @@ public class Main {
     public static int bossHealth = 700;
     public static int bossDamage = 50;
     public static String bossDefenceType;
-    public static int[] heroesHealth = {260, 210, 270};
-    public static int[] heroesDamage = {20, 15, 10};
-    public static String[] heroesAttackType = {"Physical", "Magical", "Kinetic"};
+    public static int[] heroesHealth = {260, 210, 270, 500};
+    public static int[] heroesDamage = {20, 15, 10, 5};
+    public static String[] heroesAttackType = {"Physical", "Magical", "Kinetic", "Golem"};
     public static int roundNumber;
     public static int medicHealth = 300;
     public static int medicTreatment;
@@ -45,7 +45,16 @@ public class Main {
                 if (heroesHealth[i] - bossDamage < 0) {
                     heroesHealth[i] = 0;
                 } else {
-                    heroesHealth[i] = heroesHealth[i] - bossDamage;
+                    if (i != 3) {
+                        heroesHealth[i] = heroesHealth[i] - bossDamage * 4 / 5;
+                        if (heroesHealth[3] - bossDamage / 5 < 0) {
+                            heroesHealth[3] = 0;
+                        } else {
+                            heroesHealth[3] = heroesHealth[3] - bossDamage / 5;
+                        }
+                    } else {
+                        heroesHealth[i] = heroesHealth[i] - bossDamage;
+                    }
                 }
             }
         }
@@ -120,25 +129,25 @@ public class Main {
 
     public static void setMedicTreament() {
         Random random = new Random();
-        boolean isTreated = false;
         boolean isTreatNeeds = false;
-        for (int health : heroesHealth) {
-            if (health > 0 && health < 100) {
+        int lowHealthHeroIndex = 0;
+        int lowHeroHealth = 0;
+        for (int i = 0; i < heroesHealth.length; i++) {
+            if (heroesHealth[i] > 0 && heroesHealth[i] < 100) {
                 isTreatNeeds = true;
-                break;
+                lowHealthHeroIndex = i;
+                lowHeroHealth = heroesHealth[i];
+            }
+            if (i > 0 && isTreatNeeds && lowHeroHealth > heroesHealth[i]) {
+                lowHealthHeroIndex = i;
+                lowHeroHealth = heroesHealth[i];
             }
         }
-        if (medicHealth > 0 && isTreatNeeds) {
-            while (!isTreated) {
-                int i = random.nextInt(heroesHealth.length);
-                if (heroesHealth[i] > 0 && heroesHealth[i] < 100) {
-                    medicTreatment = random.nextInt(11) * 10;
-                    System.out.println(heroesAttackType[i] + " health before Treatment: " + heroesHealth[i]);
-                    heroesHealth[i] += medicTreatment;
-                    isTreated = true;
-                } else medicTreatment = 0;
-            }
-        }
+        if (medicHealth > 0 && bossHealth > 0 && isTreatNeeds) {
+            medicTreatment = random.nextInt(11) * 10;
+            System.out.println(heroesAttackType[lowHealthHeroIndex] + " health before Treatment: " + heroesHealth[lowHealthHeroIndex]);
+            heroesHealth[lowHealthHeroIndex] += medicTreatment;
+        } else medicTreatment = 0;
     }
 }
 
