@@ -7,9 +7,9 @@ public class Main {
     public static int bossHealth = 700;
     public static int bossDamage = 50;
     public static String bossDefenceType;
-    public static int[] heroesHealth = {260, 210, 270, 500};
-    public static int[] heroesDamage = {20, 15, 10, 5};
-    public static String[] heroesAttackType = {"Physical", "Magical", "Kinetic", "Golem"};
+    public static int[] heroesHealth = {260, 210, 270, 500, 220};
+    public static int[] heroesDamage = {25, 15, 10, 5, 20};
+    public static String[] heroesAttackType = {"Physical", "Magical", "Kinetic", "Golem", "Lucky"};
     public static int roundNumber;
     public static int medicHealth = 300;
     public static int medicTreatment;
@@ -46,7 +46,18 @@ public class Main {
                     heroesHealth[i] = 0;
                 } else {
                     if (i != 3) {
-                        heroesHealth[i] = heroesHealth[i] - bossDamage * 4 / 5;
+                        if (i == 4) {
+                            Random random = new Random();
+                            boolean isLucky = random.nextBoolean();
+                            if (isLucky) {
+                                System.out.println(heroesAttackType[i] + " уклонился от удара босса");
+                                continue;
+                            } else {
+                                heroesHealth[i] = heroesHealth[i] - bossDamage * 4 / 5;
+                            }
+                        } else {
+                            heroesHealth[i] = heroesHealth[i] - bossDamage * 4 / 5;
+                        }
                         if (heroesHealth[3] - bossDamage / 5 < 0) {
                             heroesHealth[3] = 0;
                         } else {
@@ -109,7 +120,11 @@ public class Main {
     }
 
     public static void printStatistics() {
-        System.out.println("Boss health: " + bossHealth + " (" + bossDamage + ")");
+        if (bossHealth > 0) {
+            System.out.println("Boss health: " + bossHealth + " (" + bossDamage + ")");
+        } else {
+            System.out.println("Boss health: " + bossHealth + " (" + 0 + ")");
+        }
         for (int i = 0; i < heroesHealth.length; i++) {
             if (heroesHealth[i] > 0) {
                 System.out.println(heroesAttackType[i] + " health: "
@@ -138,7 +153,7 @@ public class Main {
                 lowHealthHeroIndex = i;
                 lowHeroHealth = heroesHealth[i];
             }
-            if (i > 0 && isTreatNeeds && lowHeroHealth > heroesHealth[i]) {
+            if (i > 0 && isTreatNeeds && (lowHeroHealth > heroesHealth[i])) {
                 lowHealthHeroIndex = i;
                 lowHeroHealth = heroesHealth[i];
             }
