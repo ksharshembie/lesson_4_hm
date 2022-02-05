@@ -4,7 +4,7 @@ import java.util.Random;
 
 public class Main {
 
-    public static int bossHealth = 700;
+    public static int bossHealth = 1000;
     public static int bossDamage = 50;
     public static String bossDefenceType;
     public static int[] heroesHealth = {260, 210, 270, 500, 220};
@@ -50,13 +50,21 @@ public class Main {
                             Random random = new Random();
                             boolean isLucky = random.nextBoolean();
                             if (isLucky) {
-                                System.out.println(heroesAttackType[i] + " уклонился от удара босса");
+                                System.out.println(heroesAttackType[i] + " dodged boss's hits");
                                 continue;
                             } else {
-                                heroesHealth[i] = heroesHealth[i] - bossDamage * 4 / 5;
+                                if (heroesHealth[3] > 0) {
+                                    heroesHealth[i] = heroesHealth[i] - bossDamage * 4 / 5;
+                                } else {
+                                    heroesHealth[i] = heroesHealth[i] - bossDamage;
+                                }
                             }
                         } else {
-                            heroesHealth[i] = heroesHealth[i] - bossDamage * 4 / 5;
+                            if (heroesHealth[3] > 0) {
+                                heroesHealth[i] = heroesHealth[i] - bossDamage * 4 / 5;
+                            } else {
+                                heroesHealth[i] = heroesHealth[i] - bossDamage;
+                            }
                         }
                         if (heroesHealth[3] - bossDamage / 5 < 0) {
                             heroesHealth[3] = 0;
