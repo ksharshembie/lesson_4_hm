@@ -4,11 +4,11 @@ import java.util.Random;
 
 public class Main {
 
-    public static int bossHealth = 1750;
+    public static int bossHealth = 2000;
     public static int bossDamage = 50;
     public static String bossDefenceType;
     public static int[] heroesHealth = {260, 210, 270, 500, 220, 230, 300};
-    public static int[] heroesDamage = {25, 15, 10, 5, 20, 30, 40};
+    public static int[] heroesDamage = {25, 15, 10, 5, 20, 30, 35};
     public static String[] heroesAttackType = {"Physical", "Magical", "Kinetic", "Golem", "Lucky", "Berserk", "Thor"};
     public static int roundNumber;
     public static int medicHealth = 300;
@@ -117,8 +117,12 @@ public class Main {
                     } else {
                         if (i != 5) {
                             if (i == 6) {
-                                isBossOut = random.nextBoolean();
-                                if (!isBossOut) {
+                                if (isBossOut) {
+                                    isBossOut = false;
+                                } else {
+                                    isBossOut = random.nextBoolean();
+                                }
+                                if (!isBossOut && heroesHealth[6] > 0) {
                                     bossHealth = bossHealth - heroesDamage[i] * coeff;
                                 } else {
                                     isBossOut = true;
@@ -138,8 +142,12 @@ public class Main {
                         if (i != 5) {
                             if (i == 6) {
                                 Random random = new Random();
-                                isBossOut = random.nextBoolean();
-                                if (!isBossOut) {
+                                if (isBossOut) {
+                                    isBossOut = false;
+                                } else {
+                                    isBossOut = random.nextBoolean();
+                                }
+                                if (!isBossOut && heroesHealth[6] > 0) {
                                     bossHealth = bossHealth - heroesDamage[i];
                                 } else {
                                     isBossOut = true;
@@ -206,16 +214,14 @@ public class Main {
         for (int i = 0; i < heroesHealth.length; i++) {
             if (heroesHealth[i] > 0 && heroesHealth[i] < 100) {
                 isTreatNeeds = true;
-                lowHealthHeroIndex = i;
-                lowHeroHealth = heroesHealth[i];
-            }
-            if (i > 0 && isTreatNeeds && (lowHeroHealth > heroesHealth[i])) {
-                lowHealthHeroIndex = i;
-                lowHeroHealth = heroesHealth[i];
+                if (lowHeroHealth < heroesHealth[i]) {
+                    lowHealthHeroIndex = i;
+                    lowHeroHealth = heroesHealth[i];
+                }
             }
         }
         if (medicHealth > 0 && bossHealth > 0 && isTreatNeeds) {
-            medicTreatment = random.nextInt(11) * 10;
+            medicTreatment = (random.nextInt(10) + 1) * 5;
             System.out.println(heroesAttackType[lowHealthHeroIndex] + " health before Treatment: " + heroesHealth[lowHealthHeroIndex]);
             heroesHealth[lowHealthHeroIndex] += medicTreatment;
         } else medicTreatment = 0;
