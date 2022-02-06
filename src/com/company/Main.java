@@ -83,7 +83,7 @@ public class Main {
                                     }
                                 }
                             }
-                            if (heroesHealth[3] - bossDamage / 5 < 0) {
+                            if (heroesHealth[3] == bossDamage / 5 ) {
                                 heroesHealth[3] = 0;
                             } else {
                                 heroesHealth[3] = heroesHealth[3] - bossDamage / 5;
