@@ -78,7 +78,8 @@ public class Main {
                 }
             }
             if (medicHealth > 0) {
-                medicHealth -= bossDamage;
+                medicHealth -= bossDamage * 4 / 5;
+                heroesHealth[3] -= bossDamage / 5;
                 if (medicHealth < 0) {
                     medicHealth = 0;
                 }
