@@ -11,7 +11,7 @@ public class Main {
     public static int[] heroesDamage = {25, 15, 10, 5, 20, 30, 35};
     public static String[] heroesAttackType = {"Physical", "Magical", "Kinetic", "Golem", "Lucky", "Berserk", "Thor"};
     public static int roundNumber;
-    public static int medicHealth = 300;
+    public static int medicHealth = 350;
     public static int medicTreatment;
     public static int blockedHits;
     public static boolean isBossOut = false;
