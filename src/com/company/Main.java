@@ -11,7 +11,7 @@ public class Main {
     public static int[] heroesDamage = {25, 15, 10, 5, 20, 30, 35};
     public static String[] heroesAttackType = {"Physical", "Magical", "Kinetic", "Golem", "Lucky", "Berserk", "Thor"};
     public static int roundNumber;
-    public static int medicHealth = 300;
+    public static int medicHealth = 500;
     public static int medicTreatment;
     public static int blockedHits;
     public static boolean isBossOut = false;
@@ -42,67 +42,49 @@ public class Main {
     }
 
     public static void bossHits() {
-        if (!isBossOut) {
+        if (!isBossOut && bossHealth > 0) {
             for (int i = 0; i < heroesHealth.length; i++) {
-                if (bossHealth > 0 && heroesHealth[i] > 0) {
-                    if (heroesHealth[i] - bossDamage < 0) {
-                        heroesHealth[i] = 0;
+                if (heroesHealth[i] > 0) {
+                    if (i == 3) {
+                        heroesHealth[i] -= bossDamage;
                     } else {
-                        if (i != 3) {
-                            if (i == 4) {
-                                Random random = new Random();
-                                boolean isLucky = random.nextBoolean();
-                                if (isLucky) {
-                                    System.out.println(heroesAttackType[i] + " dodged boss's hits");
-                                    continue;
-                                } else {
-                                    if (heroesHealth[3] > 0) {
-                                        heroesHealth[i] = heroesHealth[i] - bossDamage * 4 / 5;
-                                    } else {
-                                        heroesHealth[i] = heroesHealth[i] - bossDamage;
-                                    }
-                                }
+                        if (i == 4) {
+                            Random random = new Random();
+                            boolean isLucky = random.nextBoolean();
+                            if (!isLucky) {
+                                heroesHealth[i] -= bossDamage * 4 / 5;
+                                heroesHealth[3] -= bossDamage / 5;
                             } else {
-                                if (i == 5) {
-                                    Random random = new Random();
-                                    int blockRate = random.nextInt(101);
-                                    if (heroesHealth[3] > 0) {
-                                        blockedHits = bossDamage * blockRate / 100;
-                                        //System.out.println("Block Rate: " + blockRate + "%");
-                                        System.out.println("Blocked Hits by Berserk: " + blockedHits);
-                                        heroesHealth[i] = heroesHealth[i] - (bossDamage - blockedHits) * 4 / 5;
-                                    } else {
-                                        heroesHealth[i] = heroesHealth[i] - bossDamage;
-
-                                    }
-                                } else {
-                                    if (heroesHealth[3] > 0) {
-                                        heroesHealth[i] = heroesHealth[i] - bossDamage * 4 / 5;
-                                    } else {
-                                        heroesHealth[i] = heroesHealth[i] - bossDamage;
-                                    }
-                                }
-                            }
-                            if (heroesHealth[3] == bossDamage / 5 ) {
-                                heroesHealth[3] = 0;
-                            } else {
-                                heroesHealth[3] = heroesHealth[3] - bossDamage / 5;
+                                System.out.println("Lucky dodged boss damage");
                             }
                         } else {
-                            heroesHealth[i] = heroesHealth[i] - bossDamage;
+                            if (i == 5) {
+                                Random random = new Random();
+                                blockedHits = bossDamage * random.nextInt(101) / 100;
+                                System.out.println("Blocked hits by Berserk: " + blockedHits);
+                                heroesHealth[i] -= (bossDamage - blockedHits) * 4 / 5;
+                                heroesHealth[3] -= bossDamage / 5;
+                            } else {
+                                heroesHealth[i] -= bossDamage * 4 / 5;
+                                heroesHealth[3] -= bossDamage / 5;
+                            }
                         }
                     }
                 }
             }
-            if (bossHealth > 0 && medicHealth > 0) {
-                if (medicHealth - bossDamage < 0) {
+            for (int i = 0; i < heroesHealth.length; i++) {
+                if (heroesHealth[i] < 0) {
+                    heroesHealth[i] = 0;
+                }
+            }
+            if (medicHealth > 0) {
+                medicHealth -= bossDamage;
+                if (medicHealth < 0) {
                     medicHealth = 0;
-                } else {
-                    medicHealth -= bossDamage;
                 }
             }
         } else {
-            System.out.println("Boss is Out");
+            System.out.println("Boss is Out.");
         }
     }
 
