@@ -4,14 +4,14 @@ import java.util.Random;
 
 public class Main {
 
-    public static int bossHealth = 2000;
+    public static int bossHealth = 3000;
     public static int bossDamage = 50;
     public static String bossDefenceType;
     public static int[] heroesHealth = {260, 210, 270, 500, 220, 230, 300};
     public static int[] heroesDamage = {25, 15, 10, 5, 20, 30, 35};
     public static String[] heroesAttackType = {"Physical", "Magical", "Kinetic", "Golem", "Lucky", "Berserk", "Thor"};
     public static int roundNumber;
-    public static int medicHealth = 500;
+    public static int medicHealth = 300;
     public static int medicTreatment;
     public static int blockedHits;
     public static boolean isBossOut = false;
@@ -47,28 +47,24 @@ public class Main {
                 if (heroesHealth[i] > 0) {
                     if (i == 3) {
                         heroesHealth[i] -= bossDamage;
-                    } else {
-                        if (i == 4) {
-                            Random random = new Random();
-                            boolean isLucky = random.nextBoolean();
-                            if (!isLucky) {
-                                heroesHealth[i] -= bossDamage * 4 / 5;
-                                heroesHealth[3] -= bossDamage / 5;
-                            } else {
-                                System.out.println("Lucky dodged boss damage");
-                            }
+                    } else if (i == 4) {
+                        Random random = new Random();
+                        boolean isLucky = random.nextBoolean();
+                        if (!isLucky) {
+                            heroesHealth[i] -= bossDamage * 4 / 5;
+                            heroesHealth[3] -= bossDamage / 5;
                         } else {
-                            if (i == 5) {
-                                Random random = new Random();
-                                blockedHits = bossDamage * random.nextInt(101) / 100;
-                                System.out.println("Blocked hits by Berserk: " + blockedHits);
-                                heroesHealth[i] -= (bossDamage - blockedHits) * 4 / 5;
-                                heroesHealth[3] -= bossDamage / 5;
-                            } else {
-                                heroesHealth[i] -= bossDamage * 4 / 5;
-                                heroesHealth[3] -= bossDamage / 5;
-                            }
+                            System.out.println("Lucky dodged boss damage");
                         }
+                    } else if (i == 5) {
+                        Random random = new Random();
+                        blockedHits = bossDamage * random.nextInt(101) / 100;
+                        System.out.println("Blocked hits by Berserk: " + blockedHits);
+                        heroesHealth[i] -= (bossDamage - blockedHits) * 4 / 5;
+                        heroesHealth[3] -= bossDamage / 5;
+                    } else {
+                        heroesHealth[i] -= bossDamage * 4 / 5;
+                        heroesHealth[3] -= bossDamage / 5;
                     }
                 }
             }
@@ -90,58 +86,32 @@ public class Main {
     }
 
     public static void heroesHit() {
-        for (int i = 0; i < heroesDamage.length; i++) {
-            if (bossHealth > 0 && heroesHealth[i] > 0) {
-                if (bossDefenceType.equals(heroesAttackType[i])) {
-                    Random random = new Random();
-                    int coeff = random.nextInt(9) + 2; // 2,3,4,5,6,7,8,9,10
-                    if (((bossHealth - heroesDamage[i]) * coeff < 0) || ((bossHealth - heroesDamage[i] * coeff - blockedHits) < 0)) {
-                        bossHealth = 0;
+        if (bossHealth > 0) {
+            Random random = new Random();
+            int coeff = random.nextInt(9) + 2;
+            for (int i = 0; i < heroesDamage.length; i++) {
+                if (heroesHealth[i] > 0) {
+                    if (bossDefenceType.equals(heroesAttackType[i])) {
+                        bossHealth -= heroesDamage[i] * coeff;
+                        System.out.println("Critical damage: " + heroesDamage[i] * coeff);
                     } else {
-                        if (i != 5) {
-                            if (i == 6) {
-                                if (isBossOut) {
-                                    isBossOut = false;
-                                } else {
-                                    isBossOut = random.nextBoolean();
-                                }
-                                if (!isBossOut && heroesHealth[6] > 0) {
-                                    bossHealth = bossHealth - heroesDamage[i] * coeff;
-                                } else {
-                                    isBossOut = true;
-                                }
-                            } else {
-                                bossHealth = bossHealth - heroesDamage[i] * coeff;
-                            }
+                        bossHealth -= heroesDamage[i];
+                    }
+                    if (i == 5) {
+                        bossHealth -= blockedHits;
+                    }
+                    if (i == 6) {
+                        if (isBossOut) {
+                            isBossOut = false;
                         } else {
-                            bossHealth = bossHealth - heroesDamage[i] * coeff - blockedHits;
+                            isBossOut = random.nextBoolean();
                         }
                     }
-                    System.out.println("Critical damage: " + heroesDamage[i] * coeff);
-                } else {
-                    if (((bossHealth - heroesDamage[i]) < 0) || ((bossHealth - heroesDamage[i] - blockedHits) < 0)) {
-                        bossHealth = 0;
-                    } else {
-                        if (i != 5) {
-                            if (i == 6) {
-                                Random random = new Random();
-                                if (isBossOut) {
-                                    isBossOut = false;
-                                } else {
-                                    isBossOut = random.nextBoolean();
-                                }
-                                if (!isBossOut && heroesHealth[6] > 0) {
-                                    bossHealth = bossHealth - heroesDamage[i];
-                                } else {
-                                    isBossOut = true;
-                                }
-                            } else {
-                                bossHealth = bossHealth - heroesDamage[i];
-                            }
-                        } else {
-                            bossHealth = bossHealth - heroesDamage[i] - blockedHits;
-                        }
-                    }
+                }
+                if (bossHealth < 0) {
+                    bossHealth = 0;
+                    System.out.println("Boss dead by " + heroesAttackType[i]);
+                    break;
                 }
             }
         }
