@@ -7,6 +7,7 @@ public class Main {
     public static int bossHealth = 2000;
     public static int bossDamage = 50;
     public static String bossDefenceType;
+    //public static int[] heroesHealth = {40, 80, 110, 30, 10, 157, 140};
     public static int[] heroesHealth = {260, 210, 270, 500, 220, 230, 300};
     public static int[] heroesDamage = {25, 15, 10, 5, 20, 30, 35};
     public static String[] heroesAttackType = {"Physical", "Magical", "Kinetic", "Golem", "Lucky", "Berserk", "Thor"};
@@ -72,16 +73,16 @@ public class Main {
                     }
                 }
             }
-            for (int i = 0; i < heroesHealth.length; i++) {
-                if (heroesHealth[i] < 0) {
-                    heroesHealth[i] = 0;
-                }
-            }
             if (medicHealth > 0) {
                 medicHealth -= bossDamage * 4 / 5;
                 heroesHealth[3] -= bossDamage / 5;
                 if (medicHealth < 0) {
                     medicHealth = 0;
+                }
+            }
+            for (int i = 0; i < heroesHealth.length; i++) {
+                if (heroesHealth[i] < 0) {
+                    heroesHealth[i] = 0;
                 }
             }
         } else {
@@ -190,20 +191,20 @@ public class Main {
     }
 
     public static void setMedicTreament() {
-        Random random = new Random();
         boolean isTreatNeeds = false;
         int lowHealthHeroIndex = 0;
-        int lowHeroHealth = 0;
+        int lowHeroHealth = heroesHealth[0];
         for (int i = 0; i < heroesHealth.length; i++) {
             if (heroesHealth[i] > 0 && heroesHealth[i] < 100) {
                 isTreatNeeds = true;
-                if (lowHeroHealth < heroesHealth[i]) {
+                if ((lowHeroHealth > heroesHealth[i]) || (lowHeroHealth == 0)) {
                     lowHealthHeroIndex = i;
                     lowHeroHealth = heroesHealth[i];
                 }
             }
         }
         if (medicHealth > 0 && bossHealth > 0 && isTreatNeeds) {
+            Random random = new Random();
             medicTreatment = (random.nextInt(10) + 1) * 5;
             System.out.println(heroesAttackType[lowHealthHeroIndex] + " health before Treatment: " + heroesHealth[lowHealthHeroIndex]);
             heroesHealth[lowHealthHeroIndex] += medicTreatment;
