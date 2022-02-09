@@ -62,7 +62,7 @@ public class Main {
                             blockedHits = bossDamage * random.nextInt(101) / 100;
                             System.out.println("Blocked hits by Berserk: " + blockedHits);
                             heroesHealth[i] -= (bossDamage - blockedHits) * 4 / 5;
-                            heroesHealth[3] -= bossDamage / 5;
+                            heroesHealth[3] -= (bossDamage - blockedHits) / 5;
                         } else {
                             heroesHealth[i] -= bossDamage * 4 / 5;
                             heroesHealth[3] -= bossDamage / 5;
